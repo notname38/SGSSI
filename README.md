@@ -9,19 +9,19 @@ Be sure you have python 3 installed, alongside it's standart programming librari
 
 ## Usage
 
-### File checker 
+### File checker 1
 
 How to use the file checker:
 
 ```bash
-python3 fileChecker.py
+python3 fileChecker_1.py
 ```
 You will be prompted to input two files. These files must be in the same folder as the program.
 
 Example 
 
 ```bash
-python3 fileChecker.py
+python3 fileChecker_1.py
 
 "Whats the original file?"
 test.txt
@@ -31,6 +31,33 @@ testHash.txt
 
 File is correct.
 ```
+
+### File checker 2
+These file checker makes sure that both files start with the same content, and the second file contains the following extra:
+
+> Last line must contain 8 hex characters followed by a blank and the group id.
+
+How to use the file checker 2:
+
+```bash
+python3 fileChecker_2.py
+```
+You will be prompted to input two files. These files must be in the same folder as the program.
+
+Example 
+
+```bash
+python3 fileChecker_2.py
+
+"Whats the original file?"
+testFiller.txt
+
+"Whats the file to be checked? "
+test2Filler.txt
+
+File is correct.
+```
+
 
 ### Miner 
 

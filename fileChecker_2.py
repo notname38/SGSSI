@@ -1,3 +1,5 @@
+## Version lab 5
+
 import hashlib
 import os 
 
@@ -21,11 +23,21 @@ def same_hash (ogFile, newFile):
         ogFileLines = file1.readlines()
     with open(name2) as file2:
         newFileLines = file2.readlines()
+    
+    # both files have the same information.
     for i in range(len(ogFileLines)):
         result = result and (ogFileLines[i] == newFileLines[i])
         if not result:
             return False
-    result = result and (newFileLines[-1] == encoder_function(ogFile))
+
+    # How does this work?
+    # We need to check if the newFile or the file to be tested has, in its last line,
+    # a filler with at least 8 characters, plus a small sequence showing thr group it belongs to.
+    # This small sequence will always be at least of size 3 (G01, G02...), plus a blank character in the 
+    # middle. Thus the total length of the sequence will always be 8+3+1=12 or more. 
+    # Then the only thing we need to check is if the length is correct and that space followed by G
+    # is in the line.
+    result = result and (len(newFileLines[-1]) >= 12) and (" G" in newFileLines[-1])
 
     return(result)
 
