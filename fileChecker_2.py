@@ -14,7 +14,7 @@ def encoder_function(name):
     mLib.update(byteString)
     return mLib.hexdigest()
 
-def same_hash (ogFile, newFile):
+def check_file (ogFile, newFile):
     cwd = os.getcwd()
     result = True
     name1 = cwd + "/" + ogFile
@@ -39,12 +39,14 @@ def same_hash (ogFile, newFile):
     # is in the line.
     result = result and (len(newFileLines[-1]) >= 12) and (" G" in newFileLines[-1])
 
+    result = result and (encoder_function(newFile)[0] == "0")
+
     return(result)
 
 def main():
     ogFile = input("Whats the original file? \n")
     newFile = input("Whats the file to be checked? \n")
-    result = same_hash(ogFile, newFile)
+    result = check_file(ogFile, newFile)
     text = "File is not correct."
     if result:
         text = "File is correct."
