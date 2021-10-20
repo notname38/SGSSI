@@ -10,6 +10,9 @@ Be sure you have python 3 installed, alongside it's standart programming librari
 ## Usage
 
 ### File checker 1
+These file checker makes sure that both files start with the same content, and the second file contains the following extra:
+
+> Last line must contain the SHA256 of the first file.
 
 How to use the file checker:
 
@@ -92,7 +95,9 @@ Output will be provided on an output file.
 
 ## MD5 of each python file
 
->fileChecker.py: e2a84ca7aaac99ea3d02fdb5d50e4188
+>fileChecker_1.py: 37d2effce4e51e7dccafcffe6fea8cdd
+
+>fileChecker_2.py: d86c27d08a6f70edcf631f5af9c36b3c
 
 >miner.py: 9e09b65f5ac15566e7e5546eabd40ead
 
