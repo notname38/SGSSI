@@ -67,7 +67,7 @@ Output will be provided on an output file.
 
 >fileChecker.py: e2a84ca7aaac99ea3d02fdb5d50e4188
 
->miner.py: 1274fe60ed54d4a42a0e9fec616aedcc
+>miner.py: 9e09b65f5ac15566e7e5546eabd40ead
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
