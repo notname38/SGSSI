@@ -22,7 +22,7 @@ def encoder_function(name):
     mLib.update(byteString)
     return mLib.hexdigest()
 
-def copy_write_to_file(input_text, name, list_input = False):
+def copy_write_to_file(input_text, name):
     cwd = os.getcwd()
     name = cwd + "/" + name
     with open(name) as f:
@@ -31,10 +31,6 @@ def copy_write_to_file(input_text, name, list_input = False):
     with open("output.txt", "w") as file:
         for line in contenido:
             file.write(line)
-        if list_input:
-            for elem in input_text:
-                file.write(elem)
-                file.write("\n")
         else:
             file.write(input_text)
     file.close
@@ -75,8 +71,7 @@ def cycle_to_most_zero_hash(minutes, filler_len, extr, name = "ask_for_name"):
             break
 
     print("Found SHA 256 ", best_hash, "for HEX ", best_hex)
-    end_result = [best_hex, best_hash]
-    copy_write_to_file(end_result, name, list_input=True)
+    copy_write_to_file(best_hex, name)
 
 def main():
     #endName = "mining_result.txt"
