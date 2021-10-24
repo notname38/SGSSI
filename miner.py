@@ -2,6 +2,7 @@ import hashlib
 import os 
 import time
 import secrets
+from tqdm import tqdm
 
 def random_hex(filler_len, extr):
     rand_hex_str = "1"
@@ -43,34 +44,31 @@ def contarZeros(input_text):
         cont = cont + 1
     return cont
 
-def cycle_to_most_zero_hash(minutes, filler_len, extr, name = "ask_for_name"):
-    if name == "ask_for_name":
-        name = input("Please type the file to be mined (must be in the same folder). \n")
-
-    timeout = time.time() + 60*minutes
-
+def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
     current_hex = random_hex(filler_len, extr)
     best_hex = current_hex
 
     copy_write_to_file(current_hex, name)
     current_hash = encoder_function("output.txt")
     best_hash = current_hash
+    timeout = time.time() + 60*minutes
+    
+    with tqdm(total = minutes*60) as pbar:
+        while (time.time() < timeout):
+            it_start = time.time()
+            current_hex = random_hex(filler_len, extr)
+            copy_write_to_file(current_hex, name)
+            current_hash = encoder_function("output.txt")
+            new_zeros = contarZeros(current_hash)
+            best_zeros = contarZeros(best_hash)
 
-    while True:
-        print("Tried hex ", current_hex, " for sha256 ", current_hash)
-        current_hex = random_hex(filler_len, extr)
-        copy_write_to_file(current_hex, name)
-        current_hash = encoder_function("output.txt")
-        new_zeros = contarZeros(current_hash)
-        best_zeros = contarZeros(best_hash)
+            if new_zeros > best_zeros:
+                best_hash = current_hash
+                best_hex = current_hex
+                print("New best hex ", best_hex, " for sha256 ", best_hash, " \n")
+            it_end = time.time()
+            pbar.update(it_end - it_start)
 
-        if new_zeros > best_zeros:
-            best_hash = current_hash
-            best_hex = current_hex
-        if (time.time() > timeout):
-            break
-
-    print("Found SHA 256 ", best_hash, "for HEX ", best_hex)
     copy_write_to_file(best_hex, name)
 
 def main():
@@ -78,6 +76,7 @@ def main():
     lenFiller = int(input("How long should the filler be? \n"))
     extr = input("Should any extra string be added to the filler? \n")
     mins = int(input("How many minutes shall the program run? \n"))
-    cycle_to_most_zero_hash(mins, lenFiller, extr)
+    name = input("Please type the file to be mined (must be in the same folder). \n")
+    cycle_to_most_zero_hash(mins, lenFiller, extr, name)
     
 main()
