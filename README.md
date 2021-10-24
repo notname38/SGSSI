@@ -99,7 +99,7 @@ Output will be provided on an output file.
 
 >fileChecker_2.py: d86c27d08a6f70edcf631f5af9c36b3c
 
->miner.py: 9e09b65f5ac15566e7e5546eabd40ead
+>miner.py: 0553f81fe39dc6000949b563b09b9e28
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
