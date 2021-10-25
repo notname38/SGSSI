@@ -2,39 +2,21 @@ import hashlib
 import os 
 import time
 import secrets
-from tqdm import tqdm
+import datetime
+#from timeit import default_timer as timer
+#from tqdm import tqdm
 
 def random_hex(filler_len, extr):
     rand_hex_str = "1"
     while len(rand_hex_str) < filler_len:
-        # Garantizamos un HEX random de longitud grande.
         rand_hex_str = secrets.token_hex(15)
-    # Identificador ACT 1.3
     return rand_hex_str[:filler_len] + extr
     
-def encoder_function(name):
-    cwd = os.getcwd()
-    name = cwd + "/" + name
-    with open(name) as file:
-        archivo = file.read()
-        byteString = str.encode(archivo)
-    file.close
+def encoder_function(text):
+    byteString = str.encode(text)
     mLib = hashlib.sha256()
     mLib.update(byteString)
     return mLib.hexdigest()
-
-def copy_write_to_file(input_text, name):
-    cwd = os.getcwd()
-    name = cwd + "/" + name
-    with open(name) as f:
-        contenido = f.readlines()
-    f.close
-    with open("output.txt", "w") as file:
-        for line in contenido:
-            file.write(line)
-        else:
-            file.write(input_text)
-    file.close
 
 def contarZeros(input_text):
     cont = 0
@@ -44,35 +26,78 @@ def contarZeros(input_text):
         cont = cont + 1
     return cont
 
-def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
-    current_hex = random_hex(filler_len, extr)
-    best_hex = current_hex
+def read_file(name):
+    cwd = os.getcwd()
+    name = cwd + "/" + name
+    with open(name) as f:
+        content = f.read()
+    f.close
+    return content
 
-    copy_write_to_file(current_hex, name)
-    current_hash = encoder_function("output.txt")
-    best_hash = current_hash
-    timeout = time.time() + 60*minutes
+def write_file(content):
+    with open("miner_output.txt", "w") as file:
+        file.write(content)
+    file.close
+
+def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
+    try:
+        itTimes = []
+        content = read_file(name)
+        if content[-1:] != "\n":
+           content = content + "\n"
+
+        current_hex = random_hex(filler_len, extr)
+        best_hex = current_hex
+
+        current_hash = encoder_function(content+current_hex)
+        best_hash = current_hash
+        
+        nanoTimeout = 60*minutes*1000000000
+        timeout = time.time_ns() + nanoTimeout
+
+
+        print("\n")
+        #print("Expected miner timeout time: ", timeout/1000000000)
+        #print("Current miner time: ", time.time_ns()/1000000000)
+        now = datetime.datetime.now()
+        print("Program start time: ", now.hour,":",now.minute,":",now.second)
+        print("Expected program duration: ", (timeout - time.time_ns())/1000000000) 
+        print("\n")
+        
     
-    with tqdm(total = minutes*60) as pbar:
-        while (time.time() < timeout):
-            it_start = time.time()
+        while (time.time_ns() <= timeout):
+            it_start = time.time_ns()
             current_hex = random_hex(filler_len, extr)
-            copy_write_to_file(current_hex, name)
-            current_hash = encoder_function("output.txt")
+            current_hash = encoder_function(content+current_hex)
             new_zeros = contarZeros(current_hash)
             best_zeros = contarZeros(best_hash)
 
             if new_zeros > best_zeros:
                 best_hash = current_hash
                 best_hex = current_hex
-                print("New best hex ", best_hex, " for sha256 ", best_hash, " \n")
-            it_end = time.time()
-            pbar.update(it_end - it_start)
+                print("Found hash with ", contarZeros(best_hash), " zeros.")
 
-    copy_write_to_file(best_hex, name)
+            it_end = time.time_ns()
+            itTimes.append(it_end-it_start)
+
+
+        print("\n")
+        print("End report:")
+        now = datetime.datetime.now()
+        print("Program end time: ", now.hour,":",now.minute,":",now.second)
+        print("Real run time: ", sum(itTimes)/1000000000, " Number of iterations: ", len(itTimes))
+        print("Best Hash: ", best_hash, " with ", contarZeros(best_hash), " zeros.")
+        print("Final filler:  ", best_hex)
+        print("Max iteration time: ", max(itTimes)/1000000000, " Fastest iteration time: ", min(itTimes)/1000000000)
+        print("Average iteration time: ",  (sum(itTimes)/len(itTimes))/1000000000)
+
+        write_file(content + best_hex)
+
+    except KeyboardInterrupt:
+        print("Miner interrupted.")
+        print("Best Found Hash: ", best_hash, " with ", contarZeros(best_hash), " zeros for filler ", best_hex)
 
 def main():
-    #endName = "mining_result.txt"
     lenFiller = int(input("How long should the filler be? \n"))
     extr = input("Should any extra string be added to the filler? \n")
     mins = int(input("How many minutes shall the program run? \n"))
