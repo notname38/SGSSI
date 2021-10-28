@@ -35,8 +35,10 @@ def read_file(name):
     f.close
     return content
 
-def write_file(content):
-    with open("miner_output.txt", "w") as file:
+def write_file(content,nzeros):
+    timestamp = datetime.datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
+    filename = str(nzeros) + "_zeros_output_" + timestamp
+    with open(filename, "w") as file:
         file.write(content)
     file.close
 
@@ -82,7 +84,7 @@ def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
                 best_hex = current_hex
                 now = datetime.datetime.now()
                 itBestHash = it
-                print("Found hash with ", contarZeros(best_hash), " zeros at ", now.hour,":",now.minute,":",now.second, ", in iteration ", it, ".")
+                print("Found hash with ", contarZeros(best_hash), " zeros at ", now.hour,":",now.minute,":",now.second, " in iteration ", it)
 
 
             it_end = time.time_ns()
@@ -102,7 +104,7 @@ def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
         print("Max iteration time: ", itMax/1000000000, " Fastest iteration time: ", itMin/1000000000)
         print("Average iteration time: ",  (itTimes/it)/1000000000)
 
-        write_file(content + best_hex)
+        write_file(content + best_hex, contarZeros(best_hash))
 
     except KeyboardInterrupt:
         print("Miner interrupted.")
