@@ -3,6 +3,7 @@ import os
 import time
 import secrets
 import datetime
+import math
 #from timeit import default_timer as timer
 #from tqdm import tqdm
 
@@ -43,7 +44,7 @@ def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
     try:
         itTimes = 0
         itMax = 0
-        itMin = 0
+        itMin = math.inf
         it = 0
         content = read_file(name)
         if content[-1:] != "\n":
@@ -69,6 +70,7 @@ def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
         
     
         while (time.time_ns() <= timeout):
+            it = it + 1
             it_start = time.time_ns()
             current_hex = random_hex(filler_len, extr)
             current_hash = encoder_function(content+current_hex)
@@ -78,13 +80,16 @@ def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
             if new_zeros > best_zeros:
                 best_hash = current_hash
                 best_hex = current_hex
-                print("Found hash with ", contarZeros(best_hash), " zeros.")
+                now = datetime.datetime.now()
+                itBestHash = it
+                print("Found hash with ", contarZeros(best_hash), " zeros at ", now.hour,":",now.minute,":",now.second, ", in iteration ", it, ".")
+
 
             it_end = time.time_ns()
             itTimes = itTimes + ((it_end-it_start)/1000000000)
             itMax = max(itMax, (it_end-it_start))
             itMin = min(itMin, (it_end-it_start))
-            it = it + 1
+ 
 
 
         print("\n")
@@ -93,7 +98,7 @@ def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
         print("Program end time: ", now.hour,":",now.minute,":",now.second)
         print("Real run time: ", itTimes, " Number of iterations: ", it)
         print("Best Hash: ", best_hash, " with ", contarZeros(best_hash), " zeros.")
-        print("Final filler:  ", best_hex)
+        print("Final filler:  ", best_hex, ". Iterations without improvement: ", it-itBestHash)
         print("Max iteration time: ", itMax/1000000000, " Fastest iteration time: ", itMin/1000000000)
         print("Average iteration time: ",  (itTimes/it)/1000000000)
 
