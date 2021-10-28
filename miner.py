@@ -41,7 +41,10 @@ def write_file(content):
 
 def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
     try:
-        itTimes = []
+        itTimes = 0
+        itMax = 0
+        itMin = 0
+        it = 0
         content = read_file(name)
         if content[-1:] != "\n":
            content = content + "\n"
@@ -78,18 +81,21 @@ def cycle_to_most_zero_hash(minutes, filler_len, extr, name):
                 print("Found hash with ", contarZeros(best_hash), " zeros.")
 
             it_end = time.time_ns()
-            itTimes.append(it_end-it_start)
+            itTimes = itTimes + ((it_end-it_start)/1000000000)
+            itMax = max(itMax, (it_end-it_start))
+            itMin = min(itMin, (it_end-it_start))
+            it = it + 1
 
 
         print("\n")
         print("End report:")
         now = datetime.datetime.now()
         print("Program end time: ", now.hour,":",now.minute,":",now.second)
-        print("Real run time: ", sum(itTimes)/1000000000, " Number of iterations: ", len(itTimes))
+        print("Real run time: ", itTimes, " Number of iterations: ", it)
         print("Best Hash: ", best_hash, " with ", contarZeros(best_hash), " zeros.")
         print("Final filler:  ", best_hex)
-        print("Max iteration time: ", max(itTimes)/1000000000, " Fastest iteration time: ", min(itTimes)/1000000000)
-        print("Average iteration time: ",  (sum(itTimes)/len(itTimes))/1000000000)
+        print("Max iteration time: ", itMax/1000000000, " Fastest iteration time: ", itMin/1000000000)
+        print("Average iteration time: ",  (itTimes/it)/1000000000)
 
         write_file(content + best_hex)
 
